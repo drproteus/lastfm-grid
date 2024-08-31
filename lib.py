@@ -17,10 +17,10 @@ def get_cover_art_grid(user, period, size, img_width, api_key):
         "format": "json",
     })
 
-    topalbums = json.loads(resp.content)["topalbums"]["album"]
+    top_albums = json.loads(resp.content)["topalbums"]["album"]
 
     covers = OrderedDict()
-    for album in topalbums:
+    for album in top_albums:
         images = album["image"]
         image_url = None
         for image in images:
@@ -35,8 +35,13 @@ def get_cover_art_grid(user, period, size, img_width, api_key):
         resp = requests.get(cover_url)
         with tempfile.NamedTemporaryFile() as temp:
             temp.write(resp.content)
-            covers[cover_url] = Image.open(temp.name)
-            covers[cover_url].resize((img_width, img_width))
+            temp.seek(0)
+            try:
+                covers[cover_url] = Image.open(temp.name, formats=["JPEG", "PNG"])
+                covers[cover_url].resize((img_width, img_width))
+            except Exception as e:
+                print(e)
+                print(cover_url)
 
     thds = []
     for cover_url in covers:
@@ -52,5 +57,8 @@ def get_cover_art_grid(user, period, size, img_width, api_key):
         box = (img_width * i, img_width * i)
         w = img_width * (i % size)
         h = img_width * (i // size)
-        im.paste(cover_image, box=(w, h))
+        try:
+            im.paste(cover_image, box=(w, h))
+        except Exception as e:
+            print(e)
     return im
