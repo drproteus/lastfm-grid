@@ -1,1 +1,45 @@
-<h1>Hello, world!</h1>
+<style>
+body {
+  font-family: monospace;
+}
+</style>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  form.addEventListener("submit", (e) => {
+    e.preventDefault();
+    document.getElementById("submit").disabled = true;
+
+    const user = document.getElementById("user").value;
+    const width = document.getElementById("width").value;
+    const height = document.getElementById("height").value;
+    const period = document.getElementById("period").value;
+
+    fetch(`/covers/${width}/${height}/${user}/${period}`, {
+      method: "POST",
+    }).then(response => response.blob()
+    ).then(blob => {
+      const objectURL = URL.createObjectURL(blob);
+      document.getElementById("cover-art-grid").src = objectURL;
+      document.getElementById("submit").disabled = false;
+    });
+  });
+});
+</script>
+<html>
+  <h1>Last.FM Cover Art Grid</h2>
+  <form id="form" action="">
+    <input type="text" name="user" id="user" placeholder="user" required>
+    <select id="period">
+      <option value="overall" selected>overall</option>
+       <option value="7day">7 day</option>
+       <option value="1month">1 month</option>
+       <option value="3month">3 months</option>
+       <option value="6month">6 months</option>
+       <option value="12month">12 months</option>
+    </select>
+    <input type="number" min="2" max="10" name="width" id="width" value=3>
+    <input type="number" min="2" max="10" name="height" id="height" value=3>
+    <button id="submit">submit</button>
+  </form>
+  <img id="cover-art-grid" src="">
+</html>
