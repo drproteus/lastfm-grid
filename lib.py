@@ -7,7 +7,7 @@ from collections import OrderedDict
 from typing import Optional
 
 
-def get_cover_art_grid(user, period, size, img_width, api_key) -> Optional[Image.Image]:
+def get_cover_art_grid(user, period, width, height, img_width, api_key) -> Optional[Image.Image]:
     url = "https://ws.audioscrobbler.com/2.0"
 
     resp = requests.get(url, params={
@@ -32,7 +32,7 @@ def get_cover_art_grid(user, period, size, img_width, api_key) -> Optional[Image
                 image_url = image["#text"]
         if image_url:
             covers[image_url] = None
-            if len(covers) >= size ** 2:
+            if len(covers) >= width * height:
                 break
 
     def load_resize_cover(cover_url):
@@ -56,11 +56,10 @@ def get_cover_art_grid(user, period, size, img_width, api_key) -> Optional[Image
     for thd in thds:
         thd.join()
 
-    im = Image.new(mode="RGB", size=(img_width * size, img_width * size))
+    im = Image.new(mode="RGB", size=(img_width * width, img_width * height))
     for i, (cover_url, cover_image) in enumerate(covers.items()):
-        box = (img_width * i, img_width * i)
-        w = img_width * (i % size)
-        h = img_width * (i // size)
+        w = img_width * (i % width)
+        h = img_width * (i // width % height)
         try:
             im.paste(cover_image, box=(w, h))
         except Exception as e:

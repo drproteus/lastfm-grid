@@ -16,10 +16,9 @@ def index():
     return render_template("index.html")
 
 
-@app.route("/covers/<size>/<user>/<period>", methods=["POST"])
-def get_covers(user, period, size):
-    size = max(min(int(size), 8), 2)
-    im = get_cover_art_grid(user, period, int(size), IMG_WIDTH, API_KEY)
+@app.route("/covers/<width>/<height>/<user>/<period>", methods=["POST"])
+def get_covers(user, period, width, height):
+    im = get_cover_art_grid(user, period, int(width), int(height), IMG_WIDTH, API_KEY)
     if im is None:
         abort(404)
     with tempfile.NamedTemporaryFile() as f:
