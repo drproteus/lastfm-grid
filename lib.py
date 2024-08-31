@@ -4,9 +4,10 @@ import tempfile
 import threading
 from PIL import Image
 from collections import OrderedDict
+from typing import Optional
 
 
-def get_cover_art_grid(user, period, size, img_width, api_key):
+def get_cover_art_grid(user, period, size, img_width, api_key) -> Optional[Image.Image]:
     url = "https://ws.audioscrobbler.com/2.0"
 
     resp = requests.get(url, params={
@@ -17,7 +18,10 @@ def get_cover_art_grid(user, period, size, img_width, api_key):
         "format": "json",
     })
 
-    top_albums = json.loads(resp.content)["topalbums"]["album"]
+    try:
+        top_albums = json.loads(resp.content)["topalbums"]["album"]
+    except Exception:
+        return None
 
     covers = OrderedDict()
     for album in top_albums:
