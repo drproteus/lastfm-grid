@@ -1,1 +1,4 @@
 .python-version
+*.pyc
+*.pyt
+__pycache__
