@@ -8,10 +8,7 @@ app = Flask(__name__)
 
 
 API_KEY = os.getenv("API_KEY")
-user = "Zarhyn"
-period = "3month"
-size = 5
-img_width = 174
+IMG_WIDTH = 174
 
 
 @app.route("/")
@@ -20,8 +17,8 @@ def index():
 
 
 @app.route("/covers/<size>/<user>/<period>", methods=["POST"])
-def get_covers(user=user, period=period, size=size):
-    im = get_cover_art_grid(user, period, int(size), img_width, API_KEY)
+def get_covers(user, period, size):
+    im = get_cover_art_grid(user, period, int(size), IMG_WIDTH, API_KEY)
     with tempfile.NamedTemporaryFile() as f:
         im.save(f.name, format="JPEG")
         return send_file(f.name, download_name="covers.jpg")
