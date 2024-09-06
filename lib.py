@@ -1,35 +1,29 @@
-import json
 import requests
 import tempfile
 import threading
+from pylast import SIZE_LARGE
 from PIL import Image
 from collections import OrderedDict
 from typing import Optional
 
 
-def get_cover_art_grid(user, period, width, height, img_width, api_key) -> Optional[Image.Image]:
-    url = "https://ws.audioscrobbler.com/2.0"
+IMG_WIDTH = 174
 
-    resp = requests.get(url, params={
-        "method": "user.gettopalbums",
-        "user": user,
-        "period": period,
-        "api_key": api_key,
-        "format": "json",
-    })
 
-    try:
-        top_albums = json.loads(resp.content)["topalbums"]["album"]
-    except Exception:
-        return None
+def get_cover_art_grid(
+    network,
+    username,
+    period,
+    width,
+    height,
+    img_width=IMG_WIDTH,
+) -> Optional[Image.Image]:
+    user = network.get_user(username)
+    top_albums = user.get_top_albums(period=period)
 
     covers = OrderedDict()
     for album in top_albums:
-        images = album["image"]
-        image_url = None
-        for image in images:
-            if image["size"] == "large":
-                image_url = image["#text"]
+        image_url = album.item.get_cover_image(SIZE_LARGE)
         if image_url:
             covers[image_url] = None
             if len(covers) >= width * height:
