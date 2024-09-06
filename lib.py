@@ -19,7 +19,7 @@ def get_cover_art_grid(
     img_width=IMG_WIDTH,
 ) -> Optional[Image.Image]:
     user = network.get_user(username)
-    top_albums = user.get_top_albums(period=period)
+    top_albums = user.get_top_albums(period=period, limit=width * height + 10)
 
     covers = OrderedDict()
     for album in top_albums:
