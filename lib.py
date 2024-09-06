@@ -35,7 +35,7 @@ def get_cover_art_grid(
             temp.write(resp.content)
             temp.seek(0)
             try:
-                covers[cover_url] = Image.open(temp.name, formats=["JPEG", "PNG"])
+                covers[cover_url] = Image.open(temp.name, formats=["JPEG", "PNG", "GIF"])
                 covers[cover_url].resize((img_width, img_width))
             except Exception as e:
                 print(e)
