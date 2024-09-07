@@ -1,7 +1,7 @@
 import os
 import click
 from pylast import LastFMNetwork
-from commands import images
+from commands import images, info
 
 
 @click.group("lastfm-tools")
@@ -11,6 +11,7 @@ def lastfm_tools_cli(ctx):
 
 
 lastfm_tools_cli.add_command(images.album_grid)
+lastfm_tools_cli.add_command(info.fmfetch)
 
 
 if __name__ == "__main__":
