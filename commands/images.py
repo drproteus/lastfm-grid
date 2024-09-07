@@ -15,7 +15,7 @@ from startfile import startfile
 @click.command("album-grid")
 @click.pass_obj
 @click.argument("username", type=click.STRING)
-@click.argument("output", type=click.File("wb"))
+@click.argument("output", type=click.File("wb"), required=False)
 @click.option(
     "--period",
     "-p",
@@ -37,11 +37,13 @@ from startfile import startfile
 def album_grid(network, username, output, period, width, height, ascii, _open):
     im = get_cover_art_grid(network, username, period, width, height)
     if not im:
-        raise click.Abort("Failed to generate image")
+        raise click.ClickException("Failed to generate image")
     if ascii:
         art = AsciiArt.from_pillow_image(im)
         art.to_terminal()
         return
+    elif not output:
+        raise click.ClickException("Output or ASCII option required")
     im.save(output.name, format="JPEG")
     if _open:
         startfile(output.name)
