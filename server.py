@@ -1,6 +1,6 @@
 import os
 import tempfile
-from lib import get_cover_art_grid
+from lib.images import get_cover_art_grid
 from flask import Flask, render_template, send_file, abort
 from pylast import LastFMNetwork
 
