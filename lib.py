@@ -7,16 +7,12 @@ from collections import OrderedDict
 from typing import Optional
 
 
-IMG_WIDTH = 174
-
-
 def get_cover_art_grid(
     network,
     username,
     period,
     width,
     height,
-    img_width=IMG_WIDTH,
 ) -> Optional[Image.Image]:
     user = network.get_user(username)
     top_albums = user.get_top_albums(period=period, limit=width * height + 10)
@@ -36,7 +32,6 @@ def get_cover_art_grid(
             temp.seek(0)
             try:
                 covers[cover_url] = Image.open(temp.name, formats=["JPEG", "PNG", "GIF"])
-                covers[cover_url].resize((img_width, img_width))
             except Exception as e:
                 print(e)
                 print(cover_url)
@@ -49,6 +44,12 @@ def get_cover_art_grid(
 
     for thd in thds:
         thd.join()
+
+    img_width = 0
+    for _, cover_image in covers.items():
+        img_width = cover_image.width
+        if img_width:
+            break
 
     im = Image.new(mode="RGB", size=(img_width * width, img_width * height))
     for i, (cover_url, cover_image) in enumerate(covers.items()):
