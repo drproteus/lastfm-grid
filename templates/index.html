@@ -26,11 +26,14 @@ document.addEventListener("DOMContentLoaded", () => {
       document.getElementById("download").disabled = false;
 
       document.getElementById("download").onclick = function() {
-        let link = document.createElement("a");
-        link.id = "download-link";
+        let link = document.getElementById("download-link");
+        if (!link) {
+          link = document.createElement("a")
+          link.id = "download-link";
+          document.body.appendChild(link);
+        }
         link.href = objectURL;
         link.download = `${user}-${width}-${height}-${period}.jpg`;
-        document.body.appendChild(link);
         document.getElementById("download-link").click()
       }
     });
