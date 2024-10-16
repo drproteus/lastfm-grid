@@ -9,6 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
   form.addEventListener("submit", (e) => {
     e.preventDefault();
     document.getElementById("submit").disabled = true;
+    document.getElementById("download").disabled = true;
 
     const user = document.getElementById("user").value;
     const width = document.getElementById("width").value;
@@ -22,9 +23,20 @@ document.addEventListener("DOMContentLoaded", () => {
       const objectURL = URL.createObjectURL(blob);
       document.getElementById("cover-art-grid").src = objectURL;
       document.getElementById("submit").disabled = false;
+      document.getElementById("download").disabled = false;
+
+      document.getElementById("download").onclick = function() {
+        let link = document.createElement("a");
+        link.id = "download-link";
+        link.href = objectURL;
+        link.download = `${user}-${width}-${height}-${period}.jpg`;
+        document.body.appendChild(link);
+        document.getElementById("download-link").click()
+      }
     });
   });
 });
+
 </script>
 <html>
   <title>Last.FM Cover Art Grid</title>
@@ -42,6 +54,8 @@ document.addEventListener("DOMContentLoaded", () => {
     <input type="number" min="2" max="8" name="width" id="width" value=3>
     <input type="number" min="2" max="8" name="height" id="height" value=3>
     <button id="submit">submit</button>
+    <button id="download" disabled>download</button>
+    <a href="https://github.com/drproteus/lastfm-grid">github</a>
   </form>
   <img id="cover-art-grid" src="">
 </html>
